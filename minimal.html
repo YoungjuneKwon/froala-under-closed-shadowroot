@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Froala Shadow DOM - Minimal Example</title>
+    
+    <!-- Froala CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/froala-editor@latest/css/froala_editor.pkgd.min.css" rel="stylesheet" />
+</head>
+<body>
+    <!-- The custom element -->
+    <froala-shadow-editor></froala-shadow-editor>
+    
+    <!-- jQuery (required) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    <!-- Froala Editor -->
+    <script src="https://cdn.jsdelivr.net/npm/froala-editor@latest/js/froala_editor.pkgd.min.js"></script>
+    
+    <script>
+        // Web Component with Closed Shadow Root
+        class FroalaShadowEditor extends HTMLElement {
+            constructor() {
+                super();
+                const shadow = this.attachShadow({ mode: 'closed' });
+                this._shadow = shadow;
+                this.editor = null;
+            }
+            
+            connectedCallback() {
+                // Add styles
+                this._shadow.innerHTML = `
+                    <style>
+                        @import url('https://cdn.jsdelivr.net/npm/froala-editor@latest/css/froala_editor.pkgd.min.css');
+                        :host { display: block; }
+                        #editor { min-height: 300px; }
+                    </style>
+                    <div id="editor">
+                        <p>Start editing here...</p>
+                    </div>
+                `;
+                
+                // Initialize Froala
+                const el = this._shadow.getElementById('editor');
+                this.editor = new FroalaEditor(el, {
+                    heightMin: 300,
+                    iframe: false
+                });
+            }
+            
+            disconnectedCallback() {
+                if (this.editor) this.editor.destroy();
+            }
+            
+            getContent() {
+                return this.editor ? this.editor.html.get() : '';
+            }
+            
+            setContent(html) {
+                if (this.editor) this.editor.html.set(html);
+            }
+        }
+        
+        customElements.define('froala-shadow-editor', FroalaShadowEditor);
+    </script>
+</body>
+</html>
