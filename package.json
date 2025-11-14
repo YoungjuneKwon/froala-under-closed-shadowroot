@@ -1,0 +1,12 @@
+{
+  "name": "froala-shadow-root-test",
+  "version": "1.0.0",
+  "description": "Froala Editor in Closed Shadow Root Test",
+  "scripts": {
+    "test": "node test.js",
+    "serve": "python3 -m http.server 8080"
+  },
+  "devDependencies": {
+    "puppeteer": "^21.11.0"
+  }
+}

@@ -1,26 +1,28 @@
 <html>
-    <head>
-        <script src="https://cdn.jsdelivr.net/npm/froala-editor@4.6.0/js/froala_editor.pkgd.min.js"></script>
-    </head>
-    <body>
-        <div class="demo-wrapper" style="display: flex;">
-            <div>
-                <h2>1) 일반 DOM에서 동작하는 Froala Editor (shadow root 밖)</h2>
-                <div id="outside-editor">
-                <table border=1>
-                    <tr>
-                    <th>HELLO</th>
-                    <th>WORLD</th>
-                    </tr>
-                    <tr><td>123</td><td>456</td></tr>
-                </table>
-                </div>
-            </div>
-            <div>
-                <h2>2) Web Component 내부 closed ShadowRoot 안의 Froala Editor</h2>
-                <froala-shadow-example></froala-shadow-example>
-            </div>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/froala-editor@4.6.0/js/froala_editor.pkgd.min.js"></script>
+  </head>
+  <body>
+    <div class="demo-wrapper" style="display: flex;">
+      <div>
+        <h2>1) Froala Editor operating in the standard DOM (outside the shadow root)</h2>
+        <div id="outside-editor">
+        <table border=1>
+          <tr>
+          <th>HELLO</th>
+          <th>WORLD</th>
+          </tr>
+          <tr><td>123</td><td>456</td></tr>
+        </table>
         </div>
-        <script src="script.js"></script>
-    </body>
+      </div>
+      <div>
+        <h2>2) Froala Editor within the closed ShadowRoot of a Web Component</h2>
+        <froala-shadow-example></froala-shadow-example>
+      </div>
+    </div>
+    <script src="script.js"></script>
+  </body>
 </html>
