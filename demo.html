@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Froala Editor - CodePen Demo</title>
+    
+    <!-- Froala Editor CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/froala-editor@latest/css/froala_editor.pkgd.min.css" rel="stylesheet" type="text/css" />
+    
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            margin-bottom: 20px;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+        
+        .btn-tertiary {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+        
+        .info-box {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+        
+        .info-box h3 {
+            color: #333;
+            margin-bottom: 8px;
+            font-size: 1.1em;
+        }
+        
+        .info-box p {
+            color: #666;
+            line-height: 1.6;
+            margin: 0;
+        }
+        
+        .output-section {
+            margin-top: 20px;
+            display: none;
+        }
+        
+        .output-section.visible {
+            display: block;
+        }
+        
+        .output-section h3 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+        
+        .output-content {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 6px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.5;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        froala-editor-component {
+            display: block;
+        }
+        
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .card {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎨 Froala in Shadow DOM</h1>
+            <p>Full-featured WYSIWYG editor in a closed shadow root</p>
+        </div>
+        
+        <div class="card">
+            <div class="info-box">
+                <h3>💡 What's Special Here?</h3>
+                <p>This Froala Editor instance runs inside a <strong>closed shadow root</strong>, providing complete style encapsulation and component isolation. Perfect for modern web components!</p>
+            </div>
+            
+            <div class="controls">
+                <button class="btn" onclick="showContent()">📄 Get HTML</button>
+                <button class="btn btn-secondary" onclick="loadSample()">✨ Load Sample</button>
+                <button class="btn btn-tertiary" onclick="clearAll()">🗑️ Clear</button>
+            </div>
+            
+            <froala-editor-component id="editor"></froala-editor-component>
+            
+            <div class="output-section" id="outputSection">
+                <h3>Generated HTML:</h3>
+                <div class="output-content" id="outputContent"></div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h3 style="color: #333; margin-bottom: 15px;">🚀 Features</h3>
+            <ul style="color: #666; line-height: 2; padding-left: 20px;">
+                <li>✅ Complete shadow DOM encapsulation</li>
+                <li>✅ Full Froala editor capabilities</li>
+                <li>✅ Rich text formatting tools</li>
+                <li>✅ Clean public API</li>
+                <li>✅ Production-ready code</li>
+            </ul>
+        </div>
+    </div>
+    
+    <!-- jQuery (required by Froala) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    <!-- Froala Editor JS -->
+    <script src="https://cdn.jsdelivr.net/npm/froala-editor@latest/js/froala_editor.pkgd.min.js"></script>
+    
+    <script>
+        class FroalaEditorComponent extends HTMLElement {
+            constructor() {
+                super();
+                const shadow = this.attachShadow({ mode: 'closed' });
+                this._shadowRoot = shadow;
+                this.editorInstance = null;
+            }
+            
+            connectedCallback() {
+                this.render();
+                this.initializeEditor();
+            }
+            
+            render() {
+                const style = document.createElement('style');
+                style.textContent = `
+                    @import url('https://cdn.jsdelivr.net/npm/froala-editor@latest/css/froala_editor.pkgd.min.css');
+                    
+                    :host {
+                        display: block;
+                        width: 100%;
+                    }
+                    
+                    .editor-container {
+                        border: 1px solid #e2e8f0;
+                        border-radius: 8px;
+                        background: #fff;
+                        overflow: hidden;
+                    }
+                    
+                    #editor-area {
+                        min-height: 300px;
+                    }
+                `;
+                
+                const container = document.createElement('div');
+                container.className = 'editor-container';
+                
+                const editorArea = document.createElement('div');
+                editorArea.id = 'editor-area';
+                editorArea.innerHTML = '<p>✨ Welcome to Froala Editor in Shadow DOM!</p><p>Try formatting this text, or use the buttons above to explore.</p>';
+                
+                container.appendChild(editorArea);
+                this._shadowRoot.appendChild(style);
+                this._shadowRoot.appendChild(container);
+            }
+            
+            initializeEditor() {
+                const element = this._shadowRoot.getElementById('editor-area');
+                
+                try {
+                    this.editorInstance = new FroalaEditor(element, {
+                        toolbarButtons: [
+                            ['bold', 'italic', 'underline', 'strikeThrough'],
+                            ['fontFamily', 'fontSize', 'textColor', 'backgroundColor'],
+                            ['alignLeft', 'alignCenter', 'alignRight', 'alignJustify'],
+                            ['formatOL', 'formatUL', 'outdent', 'indent'],
+                            ['insertLink', 'insertImage', 'insertTable'],
+                            ['undo', 'redo', 'clearFormatting', 'html']
+                        ],
+                        heightMin: 300,
+                        charCounterCount: true,
+                        placeholderText: 'Start typing here...',
+                        attribution: true,
+                        iframe: false,
+                        events: {
+                            initialized: function() {
+                                console.log('✓ Editor initialized in shadow DOM');
+                            }
+                        }
+                    });
+                } catch (error) {
+                    console.error('Error initializing editor:', error);
+                }
+            }
+            
+            disconnectedCallback() {
+                if (this.editorInstance) {
+                    this.editorInstance.destroy();
+                }
+            }
+            
+            getContent() {
+                return this.editorInstance ? this.editorInstance.html.get() : '';
+            }
+            
+            setContent(html) {
+                if (this.editorInstance) {
+                    this.editorInstance.html.set(html);
+                }
+            }
+            
+            clear() {
+                this.setContent('');
+            }
+        }
+        
+        customElements.define('froala-editor-component', FroalaEditorComponent);
+        
+        // Demo functions
+        function showContent() {
+            const editor = document.getElementById('editor');
+            const content = editor.getContent();
+            const outputSection = document.getElementById('outputSection');
+            const outputContent = document.getElementById('outputContent');
+            
+            outputContent.textContent = content;
+            outputSection.classList.add('visible');
+        }
+        
+        function loadSample() {
+            const editor = document.getElementById('editor');
+            const sample = `
+                <h2>🎯 Sample Content</h2>
+                <p>This demonstrates the <strong>power</strong> of Froala Editor with <em>rich formatting</em>.</p>
+                <ul>
+                    <li>List item with <span style="color: #667eea;">colored text</span></li>
+                    <li>Another item with <span style="background-color: #ffd700;">highlighted background</span></li>
+                    <li>And a <a href="https://www.froala.com">clickable link</a></li>
+                </ul>
+                <p>You can add images, tables, videos, and much more! 🚀</p>
+            `;
+            editor.setContent(sample);
+            
+            // Hide output when loading new content
+            document.getElementById('outputSection').classList.remove('visible');
+        }
+        
+        function clearAll() {
+            const editor = document.getElementById('editor');
+            editor.clear();
+            document.getElementById('outputSection').classList.remove('visible');
+        }
+    </script>
+</body>
+</html>

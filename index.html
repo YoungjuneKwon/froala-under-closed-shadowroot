@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Froala Editor in Closed Shadow Root</title>
+    
+    <!-- Froala Editor CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/froala-editor@latest/css/froala_editor.pkgd.min.css" rel="stylesheet" type="text/css" />
+    
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 900px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .description {
+            color: #666;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        
+        froala-editor-component {
+            display: block;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Froala Editor in Closed Shadow Root</h1>
+    <p class="description">
+        This example demonstrates how to use the Froala WYSIWYG editor inside a web component with a closed shadow root.
+        The editor is encapsulated within the shadow DOM, providing style isolation and component encapsulation.
+    </p>
+    
+    <froala-editor-component></froala-editor-component>
+    
+    <!-- jQuery (required by Froala) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    <!-- Froala Editor JS -->
+    <script src="https://cdn.jsdelivr.net/npm/froala-editor@latest/js/froala_editor.pkgd.min.js"></script>
+    
+    <script>
+        class FroalaEditorComponent extends HTMLElement {
+            constructor() {
+                super();
+                
+                // Create closed shadow root
+                this.shadowRoot = this.attachShadow({ mode: 'closed' });
+                
+                // Store reference to editor instance
+                this.editorInstance = null;
+            }
+            
+            connectedCallback() {
+                this.render();
+                this.initializeEditor();
+            }
+            
+            render() {
+                // Create styles for shadow DOM
+                const style = document.createElement('style');
+                style.textContent = `
+                    :host {
+                        display: block;
+                        width: 100%;
+                    }
+                    
+                    .editor-container {
+                        border: 1px solid #ddd;
+                        border-radius: 4px;
+                        padding: 10px;
+                        background: #fff;
+                    }
+                    
+                    .editor-wrapper {
+                        min-height: 300px;
+                    }
+                    
+                    /* Import Froala styles into shadow DOM */
+                    @import url('https://cdn.jsdelivr.net/npm/froala-editor@latest/css/froala_editor.pkgd.min.css');
+                `;
+                
+                // Create editor container
+                const container = document.createElement('div');
+                container.className = 'editor-container';
+                
+                const wrapper = document.createElement('div');
+                wrapper.className = 'editor-wrapper';
+                wrapper.id = 'froala-editor';
+                wrapper.innerHTML = '<p>Start editing here...</p>';
+                
+                container.appendChild(wrapper);
+                
+                // Append to shadow root
+                this.shadowRoot.appendChild(style);
+                this.shadowRoot.appendChild(container);
+            }
+            
+            initializeEditor() {
+                // Get the editor element from shadow DOM
+                const editorElement = this.shadowRoot.getElementById('froala-editor');
+                
+                if (!editorElement) {
+                    console.error('Editor element not found in shadow DOM');
+                    return;
+                }
+                
+                // Initialize Froala Editor
+                // Note: We need to use jQuery to initialize Froala
+                // Since we're in a shadow DOM, we need to ensure the editor can access the element
+                try {
+                    // Create a temporary wrapper to initialize Froala
+                    const $editor = window.jQuery(editorElement);
+                    
+                    this.editorInstance = new FroalaEditor(editorElement, {
+                        // Basic configuration
+                        toolbarButtons: {
+                            'moreText': {
+                                'buttons': ['bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript', 'fontFamily', 'fontSize', 'textColor', 'backgroundColor', 'inlineClass', 'inlineStyle', 'clearFormatting']
+                            },
+                            'moreParagraph': {
+                                'buttons': ['alignLeft', 'alignCenter', 'formatOLSimple', 'alignRight', 'alignJustify', 'formatOL', 'formatUL', 'paragraphFormat', 'paragraphStyle', 'lineHeight', 'outdent', 'indent', 'quote']
+                            },
+                            'moreRich': {
+                                'buttons': ['insertLink', 'insertImage', 'insertVideo', 'insertTable', 'emoticons', 'fontAwesome', 'specialCharacters', 'embedly', 'insertFile', 'insertHR']
+                            },
+                            'moreMisc': {
+                                'buttons': ['undo', 'redo', 'fullscreen', 'print', 'getPDF', 'spellChecker', 'selectAll', 'html', 'help'],
+                                'align': 'right',
+                                'buttonsVisible': 2
+                            }
+                        },
+                        pluginsEnabled: ['align', 'charCounter', 'codeBeautifier', 'codeView', 'colors', 'draggable', 'emoticons', 'entities', 'fontFamily', 'fontSize', 'fullscreen', 'inlineClass', 'inlineStyle', 'lineBreaker', 'lineHeight', 'link', 'lists', 'paragraphFormat', 'paragraphStyle', 'quickInsert', 'quote', 'save', 'table', 'url', 'wordPaste'],
+                        heightMin: 300,
+                        charCounterCount: true,
+                        // Important: Configure iframe and popup settings for shadow DOM
+                        iframe: false,
+                        // Set the parent element for popups to work correctly in shadow DOM
+                        scrollableContainer: 'body',
+                        
+                        // Events
+                        events: {
+                            'initialized': () => {
+                                console.log('Froala editor initialized in shadow DOM');
+                            },
+                            'contentChanged': () => {
+                                console.log('Content changed');
+                            }
+                        }
+                    });
+                } catch (error) {
+                    console.error('Error initializing Froala editor:', error);
+                }
+            }
+            
+            disconnectedCallback() {
+                // Cleanup when component is removed
+                if (this.editorInstance) {
+                    this.editorInstance.destroy();
+                }
+            }
+            
+            // Public method to get editor content
+            getContent() {
+                return this.editorInstance ? this.editorInstance.html.get() : '';
+            }
+            
+            // Public method to set editor content
+            setContent(html) {
+                if (this.editorInstance) {
+                    this.editorInstance.html.set(html);
+                }
+            }
+        }
+        
+        // Register the custom element
+        customElements.define('froala-editor-component', FroalaEditorComponent);
+    </script>
+</body>
+</html>
